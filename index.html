@@ -378,115 +378,177 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/main.js"></script>
 
 
-<body>
-  <!-- Chatbot Bubble -->
-  <div id="chatbot-container">
-    <div id="chatbot-header">💬 Chat with me!</div>
-    <div id="chatbot-body">
-      <div id="chatbot-messages"></div>
-      <input type="text" id="chatbot-input" placeholder="Type a message..." />
-    </div>
+
+		// yo new ho hai 
+<!-- Chatbot Bubble -->
+<div id="chatbot-bubble">💬</div>
+<div id="chatbot-container">
+  <div id="chatbot-header">Chatbot</div>
+  <div id="chatbot-body">
+    <div id="chatbot-messages"></div>
+    <input type="text" id="chatbot-input" placeholder="Type a message..." />
   </div>
+</div>
 
-  <script>
-    // --- CHATBOT STYLING ---
-    const style = document.createElement('style');
-    style.innerHTML = `
-      #chatbot-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 250px;
-        font-family: Arial, sans-serif;
-        z-index: 9999;
-      }
-      #chatbot-header {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        border-radius: 10px 10px 0 0;
-        cursor: pointer;
-      }
-      #chatbot-body {
-        display: none;
-        border: 1px solid #4CAF50;
-        border-top: none;
-        border-radius: 0 0 10px 10px;
-        background-color: white;
-        max-height: 300px;
-        display: flex;
-        flex-direction: column;
-      }
-      #chatbot-messages {
-        padding: 10px;
-        overflow-y: auto;
-        flex: 1;
-      }
-      .chatbot-message {
-        margin: 5px 0;
-        padding: 5px 10px;
-        border-radius: 10px;
-      }
-      .user-msg { background-color: #e0e0e0; align-self: flex-end; }
-      .bot-msg { background-color: #4CAF50; color: white; align-self: flex-start; }
-      #chatbot-input {
-        border: none;
-        border-top: 1px solid #ddd;
-        padding: 8px;
-        outline: none;
-      }
-    `;
-    document.head.appendChild(style);
+<style>
+  /* Bubble button */
+  #chatbot-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9998;
+    font-size: 22px;
+  }
 
-    // --- CHATBOT FUNCTIONALITY ---
-    const header = document.getElementById('chatbot-header');
-    const body = document.getElementById('chatbot-body');
-    const messagesDiv = document.getElementById('chatbot-messages');
-    const input = document.getElementById('chatbot-input');
+  /* Chat container */
+  #chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 280px;
+    display: none;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+  }
 
-    // Toggle chatbot open/close
-    header.addEventListener('click', () => {
-      const isOpening = body.style.display !== 'flex';
-      body.style.display = isOpening ? 'flex' : 'none';
-      if(isOpening && messagesDiv.children.length === 0){
-        // Show initial greeting
-        addMessage("🎉 Happy Dashain! 🎉", 'bot-msg');
+  #chatbot-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  #chatbot-body {
+    border: 1px solid #4CAF50;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+  }
+
+  #chatbot-messages {
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .chatbot-message {
+    margin: 5px 0;
+    padding: 5px 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+  }
+
+  .user-msg {
+    background-color: #e0e0e0;
+    align-self: flex-end;
+  }
+
+  .bot-msg {
+    background-color: #4CAF50;
+    color: white;
+    align-self: flex-start;
+  }
+
+  #chatbot-input {
+    border: none;
+    border-top: 1px solid #ddd;
+    padding: 8px;
+    outline: none;
+  }
+</style>
+
+<script>
+  const bubble = document.getElementById('chatbot-bubble');
+  const container = document.getElementById('chatbot-container');
+  const header = document.getElementById('chatbot-header');
+  const messagesDiv = document.getElementById('chatbot-messages');
+  const input = document.getElementById('chatbot-input');
+
+  // Toggle chatbot
+  bubble.addEventListener('click', () => {
+    const isClosed = container.style.display === 'none' || container.style.display === '';
+    container.style.display = isClosed ? 'flex' : 'none';
+    if (isClosed && messagesDiv.children.length === 0) {
+      addMessage("🎉 Happy Dashain! 🎉", 'bot-msg');
+    }
+  });
+
+  header.addEventListener('click', () => {
+    container.style.display = 'none';
+  });
+
+  function addMessage(text, className) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chatbot-message ${className}`;
+    msgDiv.textContent = text;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  async function botReply(userMsg) {
+    const msg = userMsg.toLowerCase();
+
+    if (msg.includes('advice')) {
+      try {
+        let res = await fetch('https://api.adviceslip.com/advice');
+        let data = await res.json();
+        return "💡 " + data.slip.advice;
+      } catch {
+        return "⚠️ Couldn't fetch advice right now.";
       }
-    });
-
-    // Simple bot replies
-    function botReply(userMsg) {
-      const msg = userMsg.toLowerCase();
-      if (msg.includes('hello') || msg.includes('hi')) return "Hi there! How are you?";
-      if (msg.includes('how are you')) return "I'm just a bot, but I'm happy to chat!";
-      if (msg.includes('bye')) return "Goodbye! Have a great day!";
-      return "Sorry, I don't understand that yet.";
     }
 
-    function addMessage(text, className) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `chatbot-message ${className}`;
-      msgDiv.textContent = text;
-      messagesDiv.appendChild(msgDiv);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    if (msg.includes('quote')) {
+      try {
+        let res = await fetch('https://api.quotable.io/random');
+        let data = await res.json();
+        return "📜 " + data.content + " — " + data.author;
+      } catch {
+        return "⚠️ Couldn't fetch quote right now.";
+      }
     }
 
-    input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter' && input.value.trim() !== '') {
-        addMessage(input.value, 'user-msg');
-        const reply = botReply(input.value);
-        setTimeout(() => addMessage(reply, 'bot-msg'), 500);
-        input.value = '';
-      }
-    });
-  </script>
-</body>
+    if (msg.includes('hello') || msg.includes('hi')) return "Hello there! 👋";
+    if (msg.includes('how are you')) return "I'm doing great, thanks for asking! 🌟";
+    if (msg.includes('bye')) return "Goodbye! Take care! 👋";
+
+    return "🤖 Try asking me for 'advice' or a 'quote'.";
+  }
+
+  input.addEventListener('keypress', async function(e) {
+    if (e.key === 'Enter' && input.value.trim() !== '') {
+      addMessage(input.value, 'user-msg');
+      const reply = await botReply(input.value);
+      setTimeout(() => addMessage(reply, 'bot-msg'), 500);
+      input.value = '';
+    }
+  });
+</script>
+
 
 
 
 
 	</body>
 </html>
+
 
 
 
