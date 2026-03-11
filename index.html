@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SG · Sugam Ghimire</title>
+  <title>Sugam Ghimire</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -481,7 +481,6 @@
       width: 100%;
       max-width: 700px;
       margin: 0 auto;
-      /* square aspect ratio via padding trick */
       aspect-ratio: 1 / 1;
     }
 
@@ -576,7 +575,6 @@
       box-shadow: 0 16px 40px -10px rgba(0,188,212,0.28);
     }
 
-    /* When ANY node is hovered, highlight its spoke via JS class */
     .spoke.active {
       stroke: rgba(0,188,212,0.7);
       stroke-width: 2;
@@ -601,7 +599,6 @@
       padding: 0 6px;
     }
 
-    /* Floating dot particles on the spokes */
     .spoke-particle {
       r: 3;
       fill: #00bcd4;
@@ -609,7 +606,6 @@
     }
     .skill-node:hover ~ svg .spoke-particle { opacity: 1; }
 
-    /* Stagger entrance animation for nodes */
     .skill-node { animation: nodeEntrance 0.7s cubic-bezier(0.2,0.9,0.1,1) both; }
     .skill-node:nth-child(1) { animation-delay: 0.1s; }
     .skill-node:nth-child(2) { animation-delay: 0.2s; }
@@ -621,7 +617,60 @@
       to   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
     }
 
-    /* Responsive scaling */
+    /* ---- SKILL INFO CARD ---- */
+    .skill-info-card {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.88);
+      width: 210px;
+      background: #ffffff;
+      border: 1.5px solid rgba(0,188,212,0.35);
+      border-radius: 1.4rem;
+      padding: 1.2rem 1.3rem 1.1rem;
+      box-shadow: 0 20px 48px -14px rgba(0,188,212,0.22), 0 4px 16px rgba(0,0,0,0.07);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      transition: opacity 0.25s ease, transform 0.28s cubic-bezier(0.2,0.9,0.1,1);
+    }
+    .skill-info-card.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .sic-header {
+      display: flex; align-items: center; gap: 9px; margin-bottom: 0.55rem;
+    }
+    .sic-icon-wrap {
+      width: 34px; height: 34px;
+      background: rgba(0,188,212,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sic-icon { font-size: 1.2rem; color: #00bcd4; }
+    .sic-title {
+      font-size: 0.78rem; font-weight: 800; color: #1e1e2f;
+      letter-spacing: 0.2px; line-height: 1.25;
+    }
+    .sic-desc {
+      font-size: 0.72rem; color: #5a5a7a; line-height: 1.55;
+      margin-bottom: 0.65rem;
+    }
+    .sic-bullets {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .sic-bullets li {
+      font-size: 0.69rem; color: #2a7a8a; font-weight: 600;
+      display: flex; align-items: flex-start; gap: 6px;
+      line-height: 1.4;
+    }
+    .sic-bullets li::before {
+      content: "✦"; color: #00bcd4; font-size: 0.52rem;
+      margin-top: 3px; flex-shrink: 0;
+    }
+
+    /* Mobile: card shifts below center */
     @media (max-width: 600px) {
       .constellation-wrap { max-width: 340px; }
       .center-node { width: 90px; height: 90px; }
@@ -633,6 +682,14 @@
       .skill-node .node-icon { width: 26px; height: 26px; }
       .skill-node .node-icon i { font-size: 0.95rem; }
       .skill-node .node-label { font-size: 0.52rem; }
+      .skill-info-card {
+        top: auto; bottom: -140px;
+        left: 50%; transform: translateX(-50%) scale(0.88);
+        width: 90%; max-width: 300px;
+      }
+      .skill-info-card.visible {
+        transform: translateX(-50%) scale(1);
+      }
     }
 
     /* ---- STATS BAR ---- */
@@ -921,11 +978,8 @@
 
       <!-- SVG layer: orbit ring + spokes (drawn by JS) -->
       <svg class="constellation-svg" id="constSvg" viewBox="0 0 700 700" preserveAspectRatio="xMidYMid meet">
-        <!-- Outer orbit ring -->
         <circle class="orbit-ring" cx="350" cy="350" r="230"/>
-        <!-- Inner faint ring -->
         <circle class="orbit-ring" cx="350" cy="350" r="90" stroke-opacity="0.5"/>
-        <!-- Spokes will be injected here by JS -->
       </svg>
 
       <!-- Center node -->
@@ -957,37 +1011,71 @@
         <span class="node-label">Web<br>Deployment</span>
       </a>
 
+      <!-- ====== SKILL INFO CARD ====== -->
+      <div class="skill-info-card" id="skillInfoCard" aria-live="polite">
+        <div class="sic-header">
+          <div class="sic-icon-wrap"><i class="bx sic-icon"></i></div>
+          <span class="sic-title"></span>
+        </div>
+        <p class="sic-desc"></p>
+        <ul class="sic-bullets"></ul>
+      </div>
+
     </div><!-- /.constellation-wrap -->
 
     <script>
-    (function() {
-      const wrap  = document.getElementById('constellation');
-      const svg   = document.getElementById('constSvg');
-      const nodes = wrap.querySelectorAll('.skill-node');
-      const COUNT = nodes.length;
-
-      // SVG viewBox coords: center at 350,350, orbit radius 230
+    (function () {
+      const wrap   = document.getElementById('constellation');
+      const svg    = document.getElementById('constSvg');
+      const nodes  = wrap.querySelectorAll('.skill-node');
+      const card   = document.getElementById('skillInfoCard');
+      const COUNT  = nodes.length;
       const CX = 350, CY = 350, R = 230;
 
-      // Position nodes + draw spokes, recalculate on resize
-      function layout() {
-        const ww = wrap.offsetWidth;
-        // nodes sit at orbit fraction of wrap width
-        const orbitFrac = 230 / 700;
+      /* ---- skill data ---- */
+      const SKILLS = [
+        {
+          icon: 'bx-layer',
+          title: 'Full-Stack Development',
+          desc: 'End-to-end web apps from database to UI, deployed to live hosting.',
+          bullets: ['PHP + MySQL full web apps', 'Authentication systems', 'CRUD dashboards', 'Deployment to live hosting']
+        },
+        {
+          icon: 'bxl-react',
+          title: 'React Frontend',
+          desc: 'Component-based UIs with reactive state and interactive dashboards.',
+          bullets: ['Component-based UI', 'State management basics', 'Interactive dashboards']
+        },
+        {
+          icon: 'bxl-php',
+          title: 'PHP Backend',
+          desc: 'Server-side logic, REST-style APIs, and secure session handling.',
+          bullets: ['REST-style APIs', 'Authentication & sessions', 'Secure database queries']
+        },
+        {
+          icon: 'bx-data',
+          title: 'MySQL Databases',
+          desc: 'Relational schema design and optimised queries for production apps.',
+          bullets: ['Database schema design', 'Optimised queries', 'CRUD operations']
+        },
+        {
+          icon: 'bx-rocket',
+          title: 'Web Deployment',
+          desc: 'Taking projects live with proper hosting, domains, and SSL.',
+          bullets: ['GitHub Pages', 'cPanel hosting', 'Domain + SSL setup']
+        }
+      ];
 
-        // Remove old spokes
+      /* ---- layout + spokes ---- */
+      function layout() {
+        const orbitFrac = 230 / 700;
         svg.querySelectorAll('.spoke, .spoke-particle').forEach(el => el.remove());
 
         nodes.forEach((node, i) => {
-          // -90deg offset so first node is at top
           const angle = (2 * Math.PI * i / COUNT) - Math.PI / 2;
-          // % positions relative to wrap
-          const pct_x = 50 + Math.cos(angle) * orbitFrac * 100;
-          const pct_y = 50 + Math.sin(angle) * orbitFrac * 100;
-          node.style.left = pct_x + '%';
-          node.style.top  = pct_y + '%';
+          node.style.left = (50 + Math.cos(angle) * orbitFrac * 100) + '%';
+          node.style.top  = (50 + Math.sin(angle) * orbitFrac * 100) + '%';
 
-          // SVG spoke coords (viewBox space)
           const sx = CX + Math.cos(angle) * R;
           const sy = CY + Math.sin(angle) * R;
 
@@ -998,7 +1086,6 @@
           line.setAttribute('data-idx', i);
           svg.appendChild(line);
 
-          // Travelling particle dot
           const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           circle.setAttribute('class', 'spoke-particle');
           circle.setAttribute('data-idx', i);
@@ -1007,35 +1094,47 @@
           circle.setAttribute('opacity', '0');
           svg.appendChild(circle);
 
-          // Animate particle along spoke on hover
           node.addEventListener('mouseenter', () => {
-            const spoke = svg.querySelector(`.spoke[data-idx="${i}"]`);
+            const spoke    = svg.querySelector(`.spoke[data-idx="${i}"]`);
             const particle = svg.querySelector(`.spoke-particle[data-idx="${i}"]`);
             if (spoke) spoke.classList.add('active');
             if (particle) {
-              particle.setAttribute('opacity','1');
-              // SMIL animation
-              particle.innerHTML = `
-                <animateMotion dur="0.7s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1">
-                  <mpath xlink:href=""/>
-                </animateMotion>`;
-              // Use setAttribute path approach
+              particle.setAttribute('opacity', '1');
               particle.innerHTML = '';
-              const anim = document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
-              anim.setAttribute('dur','0.9s');
-              anim.setAttribute('repeatCount','indefinite');
+              const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+              anim.setAttribute('dur', '0.9s');
+              anim.setAttribute('repeatCount', 'indefinite');
               anim.setAttribute('path', `M ${CX} ${CY} L ${sx} ${sy}`);
               particle.appendChild(anim);
             }
           });
           node.addEventListener('mouseleave', () => {
-            const spoke = svg.querySelector(`.spoke[data-idx="${i}"]`);
+            const spoke    = svg.querySelector(`.spoke[data-idx="${i}"]`);
             const particle = svg.querySelector(`.spoke-particle[data-idx="${i}"]`);
             if (spoke) spoke.classList.remove('active');
-            if (particle) { particle.setAttribute('opacity','0'); particle.innerHTML=''; }
+            if (particle) { particle.setAttribute('opacity', '0'); particle.innerHTML = ''; }
           });
         });
       }
+
+      /* ---- info card logic ---- */
+      function showCard(i) {
+        const s = SKILLS[i];
+        card.querySelector('.sic-icon').className = `bx ${s.icon} sic-icon`;
+        card.querySelector('.sic-title').textContent = s.title;
+        card.querySelector('.sic-desc').textContent  = s.desc;
+        const ul = card.querySelector('.sic-bullets');
+        ul.innerHTML = s.bullets.map(b => `<li>${b}</li>`).join('');
+        card.classList.add('visible');
+      }
+      function hideCard() { card.classList.remove('visible'); }
+
+      nodes.forEach((node, i) => {
+        node.addEventListener('mouseenter', () => showCard(i));
+        node.addEventListener('mouseleave', hideCard);
+        node.addEventListener('focus',      () => showCard(i));
+        node.addEventListener('blur',       hideCard);
+      });
 
       layout();
       window.addEventListener('resize', layout);
