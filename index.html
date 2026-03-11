@@ -378,6 +378,106 @@
       border: 1px solid rgba(0,188,212,0.2); text-transform: uppercase;
     }
 
+    /* ===== FULLSTACK FEATURED CARD ===== */
+    .timeline-item.featured {
+      justify-content: center;
+      padding-right: 0;
+      padding-left: 0;
+      margin-bottom: 5rem;
+    }
+    .timeline-item.featured .timeline-card {
+      max-width: 780px;
+      background: linear-gradient(135deg, rgba(0,188,212,0.07) 0%, rgba(0,210,230,0.05) 50%, rgba(0,150,180,0.08) 100%);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(0,188,212,0.35);
+      box-shadow: 0 25px 60px -20px rgba(0,188,212,0.2), 0 0 0 1px rgba(0,188,212,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+      overflow: hidden;
+    }
+    .timeline-item.featured .timeline-card::before {
+      background: linear-gradient(90deg, transparent, rgba(0,188,212,0.1), transparent);
+    }
+    .timeline-item.featured .timeline-card:hover {
+      transform: translateY(-10px) scale(1.015);
+      box-shadow: 0 40px 70px -22px rgba(0,188,212,0.3), 0 0 0 1.5px rgba(0,188,212,0.5), inset 0 1px 0 rgba(255,255,255,0.7);
+      background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(0,210,230,0.07) 50%, rgba(0,150,180,0.1) 100%);
+    }
+
+    /* Remove connector line for featured */
+    .timeline-item.featured .timeline-card::after { display: none; }
+
+    /* Featured dot — hidden, it clashes with centered card */
+    .timeline-item.featured .timeline-dot { display: none; }
+
+    .featured-top-ribbon {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d4af37, #00bcd4, #d4af37);
+      background-size: 200%;
+      animation: ribbonShimmer 3s linear infinite;
+    }
+    @keyframes ribbonShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    .featured-crown {
+      position: absolute; top: 1.4rem; right: 1.4rem;
+      background: linear-gradient(135deg, #d4af37, #f0c040);
+      color: #0d1b2a;
+      font-size: 0.72rem; font-weight: 800; padding: 0.3rem 0.9rem;
+      border-radius: 20px; letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 4px 14px rgba(212,175,55,0.4);
+    }
+
+    .timeline-item.featured .tl-icon {
+      width: 54px; height: 54px;
+      background: rgba(0,188,212,0.15);
+      border: 1px solid rgba(0,188,212,0.3);
+    }
+    .timeline-item.featured .tl-icon i { font-size: 1.8rem; }
+    .timeline-item.featured .tl-title { font-size: 1.8rem; color: #0d4f5c; }
+    .timeline-item.featured .tl-description { color: #2a6b7c; font-size: 1rem; }
+
+    .featured-stack {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;
+    }
+    .stack-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(0,188,212,0.1); color: #0a7a8f;
+      padding: 0.35rem 1rem; border-radius: 30px;
+      font-size: 0.82rem; font-weight: 600; border: 1px solid rgba(0,188,212,0.3);
+      letter-spacing: 0.3px;
+    }
+    .stack-pill i { font-size: 1rem; }
+
+    .featured-features {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .feat-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; color: #2a6b7c;
+    }
+    .feat-item::before { content: "✦"; color: #00bcd4; font-size: 0.7rem; flex-shrink: 0; }
+
+    .featured-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .tl-link-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      color: white; padding: 0.65rem 1.6rem; border-radius: 2.5rem;
+      font-weight: 700; font-size: 0.95rem; text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0,188,212,0.3);
+    }
+    .tl-link-primary:hover {
+      background: linear-gradient(135deg, #d4af37, #c9a227);
+      box-shadow: 0 12px 28px rgba(212,175,55,0.4);
+      transform: scale(1.05) translateY(-2px);
+    }
+    .tl-link-primary i { font-size: 1.1rem; }
+
     /* ---- SERVICES CARDS ---- */
     .cards { display: flex; gap: 2rem; flex-wrap: wrap; }
     .service-card {
@@ -410,7 +510,7 @@
       margin: 0.4rem 0.25rem; border: 1px solid rgba(0,188,212,0.3); font-size: 0.9rem;
     }
 
-    /* ---- STATS BAR (new addition) ---- */
+    /* ---- STATS BAR ---- */
     .stats-row {
       display: flex; gap: 2.5rem; flex-wrap: wrap;
       margin-bottom: 3rem; padding: 1.8rem 2rem;
@@ -490,6 +590,9 @@
       .timeline-item, .timeline-item:nth-child(even) {
         justify-content: flex-start; padding-left: 4.5rem; padding-right: 0; margin-bottom: 2.5rem;
       }
+      .timeline-item.featured {
+        justify-content: flex-start; padding-left: 4.5rem; padding-right: 0;
+      }
       .timeline-card { max-width: 100%; }
       .timeline-item:nth-child(odd) .timeline-card::after,
       .timeline-item:nth-child(even) .timeline-card::after {
@@ -498,12 +601,16 @@
       }
       .timeline-dot { left: 1.5rem; transform: translateY(-50%); }
       .timeline-item:hover .timeline-dot { transform: translateY(-50%) scale(1.3); }
+      .timeline-item.featured .timeline-dot { left: 1.5rem; transform: translateY(-50%); }
+      .timeline-item.featured:hover .timeline-dot { transform: translateY(-50%) scale(1.4); }
       .tl-badge { position: static; display: inline-block; margin-bottom: 0.6rem; }
+      .featured-crown { position: static; display: inline-flex; margin-bottom: 0.8rem; }
       .contact-mini { max-width: 100%; padding: 1.5rem; }
       .contact-mini-grid { justify-content: center; }
       .contact-mini-btn { flex: 1 1 calc(50% - 0.5rem); min-width: auto; padding: 0.6rem 0.8rem; font-size: 0.85rem; }
       .back-to-top { bottom: 1rem; right: 1rem; width: 40px; height: 40px; font-size: 1.4rem; }
       .scroll-hint { display: none; }
+      .featured-features { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
       .contact-mini-btn { flex: 1 1 100%; }
@@ -565,18 +672,59 @@
     </div>
   </section>
 
-  <!-- ===== PROJECTS — now FIRST ===== -->
+  <!-- ===== PROJECTS ===== -->
   <section class="section" id="projects">
     <div class="section-label">Portfolio</div>
     <h2 class="section-title"><span>Featured</span> projects</h2>
 
     <div class="timeline">
 
-      <!-- Project 1 — LEFT side -->
+      <!-- ★ FEATURED — ExpnTracker (Fullstack) — CENTER SPOTLIGHT ★ -->
+      <div class="timeline-item featured">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="featured-top-ribbon"></div>
+          <div class="featured-crown">
+            <i class='bx bx-crown'></i> Fullstack
+          </div>
+          <div class="tl-header">
+            <div class="tl-icon"><i class='bx bx-wallet-alt'></i></div>
+            <h3 class="tl-title">ExpnTracker</h3>
+          </div>
+          <p class="tl-description">
+            A fully-featured expense tracking web application built end-to-end. Manage your finances with real-time dashboards, category breakdowns, and multi-user support — all powered by a robust PHP + MySQL backend.
+          </p>
+
+          <div class="featured-stack">
+            <span class="stack-pill"><i class='bx bxl-php'></i> PHP</span>
+            <span class="stack-pill"><i class='bx bx-data'></i> MySQL</span>
+            <span class="stack-pill"><i class='bx bxl-html5'></i> HTML5</span>
+            <span class="stack-pill"><i class='bx bxl-css3'></i> CSS3</span>
+            <span class="stack-pill"><i class='bx bxl-javascript'></i> JavaScript</span>
+          </div>
+
+          <div class="featured-features">
+            <div class="feat-item">User Authentication</div>
+            <div class="feat-item">Expense Categories</div>
+            <div class="feat-item">Income & Budget Tracking</div>
+            <div class="feat-item">Real-time Dashboard</div>
+            <div class="feat-item">Data Visualization</div>
+            <div class="feat-item">Full CRUD Operations</div>
+          </div>
+
+          <div class="featured-links">
+            <a href="https://expntracker.gt.tc/" target="_blank" class="tl-link-primary">
+              <i class='bx bx-link-external'></i> Live Demo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 2 — LEFT side -->
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-card">
-          <span class="tl-badge">Project #1</span>
+          <span class="tl-badge">Project #2</span>
           <div class="tl-header">
             <div class="tl-icon"><i class='bx bx-tachometer'></i></div>
             <h3 class="tl-title">Utilito</h3>
@@ -595,11 +743,11 @@
         </div>
       </div>
 
-      <!-- Project 2 — RIGHT side -->
+      <!-- Project 3 — RIGHT side -->
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-card">
-          <span class="tl-badge">Project #2</span>
+          <span class="tl-badge">Project #3</span>
           <div class="tl-header">
             <div class="tl-icon"><i class='bx bx-keyboard'></i></div>
             <h3 class="tl-title">TypeMaster Pro</h3>
@@ -621,19 +769,18 @@
     </div>
   </section>
 
-  <!-- ===== SERVICES — now SECOND ===== -->
+  <!-- ===== SERVICES ===== -->
   <section class="section" id="services">
     <div class="section-label">What I do</div>
     <h2 class="section-title"><span>Services</span> I provide</h2>
 
-    <!-- Quick stats -->
     <div class="stats-row">
       <div class="stat-item">
-        <span class="stat-number">2+</span>
+        <span class="stat-number">3+</span>
         <span class="stat-label">Projects shipped</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">5+</span>
+        <span class="stat-number">6+</span>
         <span class="stat-label">Technologies</span>
       </div>
       <div class="stat-item">
@@ -700,8 +847,7 @@
 
   <script>
     (function () {
-      // Typewriter effect
-      const words = ['Dev', 'Coder', 'Creator'];
+      const words = ['Dev', 'Coder', 'Creator', 'Fullstack'];
       const el = document.getElementById('typewriter');
       let wordIndex = 0, charIndex = 0, isDeleting = false;
 
@@ -725,14 +871,13 @@
       }
       typeEffect();
 
-      // Scroll reveal
       const sections = document.querySelectorAll('.section');
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => {
           if (e.isIntersecting) e.target.classList.add('reveal');
           else e.target.classList.remove('reveal');
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0.1 });
       sections.forEach(s => observer.observe(s));
 
       window.addEventListener('load', () => {
@@ -742,12 +887,10 @@
         });
       });
 
-      // Back to top
       const backToTop = document.getElementById('backToTop');
       window.addEventListener('scroll', () => {
         backToTop.classList.toggle('visible', window.scrollY > window.innerHeight * 0.5);
       });
-
     })();
   </script>
 </body>
