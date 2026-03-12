@@ -1,5 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    /* ---------------- NAV HIDE ON SCROLL ---------------- */
+let lastScrollY = window.scrollY;
+
+window.addEventListener('scroll', () => {
+  const currentScrollY = window.scrollY;
+  
+  if (currentScrollY > lastScrollY && currentScrollY > 100) {
+    document.querySelector('.header-nav').style.transform = 'translateY(-120%)';
+    document.querySelector('.header-nav').style.opacity = '0';
+  } else {
+    document.querySelector('.header-nav').style.transform = 'translateY(0)';
+    document.querySelector('.header-nav').style.opacity = '1';
+  }
+  
+  lastScrollY = currentScrollY;
+});
 /* ---------------- CONSTELLATION ---------------- */
 
 const wrap   = document.getElementById('constellation');
