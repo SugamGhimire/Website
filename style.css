@@ -872,6 +872,30 @@ body.is-scrolling * {
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 768px) {
+
+  .about-grid {
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.about-content {
+  padding-right: 0;
+}
+
+.about-text {
+  font-size: 1rem;
+}
+
+.about-quote-card {
+  padding: 1.8rem 1.4rem;
+}
+
+.quote-text {
+  font-size: 1.1rem;
+}
+
+
+
   .initials { top: 1rem; left: 1rem; width: 55px; height: 55px; font-size: 1.6rem; }
   .header-nav { top: 1rem; right: 1rem; padding: 0.4rem 1rem; gap: 1rem; }
   .header-nav a { font-size: 0.9rem; }
