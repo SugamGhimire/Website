@@ -9,8 +9,268 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <style>
+    /* ============ CUSTOM CURSOR ============ */
+    * { cursor: none !important; }
+
+    .sg-cursor {
+      width: 10px; height: 10px;
+      background: #00bcd4;
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: background 0.2s ease, width 0.2s ease, height 0.2s ease;
+      /* mix-blend-mode removed — forces expensive compositing layer every rAF */
+      will-change: transform;
+    }
+    .sg-cursor-ring {
+      width: 38px; height: 38px;
+      border: 1.5px solid rgba(0,188,212,0.6);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
+      will-change: transform;
+    }
+    .sg-cursor.hovered {
+      width: 18px; height: 18px;
+      background: #d4af37;
+    }
+    .sg-cursor-ring.hovered {
+      width: 56px; height: 56px;
+      border-color: #d4af37;
+    }
+
+    /* ============ HERO PHOTO — CIRCULAR PROFESSIONAL ============ */
+    .hero-photo-area {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* Outermost slow-spin ring */
+    .photo-ring-outer {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      border: 1px dashed rgba(0,188,212,0.18);
+      animation: spinSlow 28s linear infinite;
+      will-change: transform;
+    }
+
+    /* Dot accents on outer ring */
+    .photo-ring-outer::before,
+    .photo-ring-outer::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #00bcd4;
+      border-radius: 50%;
+      top: 50%;
+      left: 0;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px rgba(0,188,212,0.8);
+    }
+    .photo-ring-outer::after {
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Medium counter-spin ring */
+    .photo-ring-mid {
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(212,175,55,0.15);
+      animation: spinSlow 18s linear infinite reverse;
+      will-change: transform;
+    }
+    .photo-ring-mid::before {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #d4af37;
+      border-radius: 50%;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      box-shadow: 0 0 8px rgba(212,175,55,0.8);
+    }
+
+    /* Glowing aura ring */
+    .photo-ring-glow {
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,188,212,0.06) 0%, rgba(0,188,212,0.03) 50%, transparent 100%);
+      border: 2px solid rgba(0,188,212,0.28);
+      /* Use opacity instead of box-shadow animation — shadow repaints every frame */
+      animation: glowPulse 4s ease-in-out infinite;
+      will-change: opacity;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.7; }
+      50%       { opacity: 1; }
+    }
+
+    /* The actual circular photo frame */
+    .photo-circle {
+      position: relative;
+      width: 290px;
+      height: 290px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2.5px solid rgba(0,188,212,0.35);
+      box-shadow:
+        0 0 0 6px rgba(0,188,212,0.06),
+        0 30px 60px -20px rgba(0,188,212,0.3),
+        0 10px 30px -10px rgba(0,0,0,0.12);
+      animation: heroPhotoFloat 7s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .photo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 1;
+      filter: contrast(1.04) saturate(1.05);
+      transition: opacity 0.5s ease;
+    }
+
+    /* Shimmer overlay on the photo circle */
+    .photo-circle::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.08) 0%,
+        transparent 40%,
+        rgba(0,188,212,0.04) 70%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    @keyframes heroPhotoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Floating tech badge top-left of circle */
+    .photo-badge {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      padding: 0.45rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #1e1e2f;
+      border: 1px solid rgba(0,188,212,0.2);
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      animation: badgeFloat 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .photo-badge i { font-size: 0.95rem; color: #00bcd4; }
+
+    .photo-badge-1 {
+      top: -10px;
+      left: -55px;
+      animation-delay: 0s;
+    }
+    .photo-badge-2 {
+      bottom: 20px;
+      right: -60px;
+      animation-delay: -2.5s;
+    }
+    .photo-badge-3 {
+      top: 50%;
+      right: -70px;
+      transform: translateY(-50%);
+      animation-delay: -1.2s;
+    }
+
+    @keyframes badgeFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+    .photo-badge-3 {
+      animation-name: badgeFloat3;
+    }
+    @keyframes badgeFloat3 {
+      0%, 100% { transform: translateY(-50%); }
+      50%       { transform: translateY(calc(-50% - 6px)); }
+    }
+
+    /* Subtle bg glow behind photo area */
+    .photo-bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      /* Replaced filter:blur (GPU killer) with a softer radial gradient */
+      background: radial-gradient(circle, rgba(0,188,212,0.07) 0%, rgba(0,188,212,0.03) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Keep hero content above photo */
+    .hero-content { position: relative; z-index: 4; }
+
+    @media (max-width: 1100px) {
+      .hero-photo-area { right: 2%; }
+      .photo-ring-outer { width: 360px; height: 360px; }
+      .photo-ring-mid   { width: 310px; height: 310px; }
+      .photo-ring-glow  { width: 270px; height: 270px; }
+      .photo-circle     { width: 240px; height: 240px; }
+      .photo-badge-1 { left: -45px; }
+      .photo-badge-2 { right: -50px; }
+      .photo-badge-3 { right: -55px; }
+    }
+    @media (max-width: 900px) {
+      .hero-photo-area { opacity: 0.35; right: -2%; }
+    }
+    @media (max-width: 700px) {
+      .hero-photo-area { display: none; }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ===== CUSTOM CURSOR ===== -->
+  <div class="sg-cursor"      id="sgCursor"></div>
+  <div class="sg-cursor-ring" id="sgRing"></div>
+
   <a href="#hero" class="back-to-top" id="backToTop">
     <i class='bx bx-chevron-up'></i>
   </a>
@@ -28,6 +288,27 @@
       <div class="grid-pattern"></div>
       <div class="gradient-spot-1"></div>
       <div class="gradient-spot-2"></div>
+    </div>
+
+    <!-- PHOTO — circular animated, right side -->
+    <div class="hero-photo-area">
+      <div class="photo-bg-glow"></div>
+      <div class="photo-ring-outer"></div>
+      <div class="photo-ring-mid"></div>
+      <div class="photo-ring-glow"></div>
+      <div class="photo-circle">
+        <img src="SUGAM_GHIMIRE.png" alt="Sugam Ghimire" />
+      </div>
+      <!-- Floating badges -->
+      <div class="photo-badge photo-badge-1">
+        <i class='bx bxl-php'></i> PHP Dev
+      </div>
+      <div class="photo-badge photo-badge-2">
+        <i class='bx bx-rocket'></i> Full-Stack
+      </div>
+      <div class="photo-badge photo-badge-3">
+        <i class='bx bx-map'></i> Nepal
+      </div>
     </div>
 
     <div class="hero-content">
@@ -79,7 +360,6 @@
           <p class="tl-description">
             A fully-featured expense tracking web application built end-to-end. Manage your finances with real-time dashboards, category breakdowns, and multi-user support — all powered by a robust PHP + MySQL backend.
           </p>
-
           <div class="featured-stack">
             <span class="stack-pill"><i class='bx bxl-php'></i> PHP</span>
             <span class="stack-pill"><i class='bx bx-data'></i> MySQL</span>
@@ -87,7 +367,6 @@
             <span class="stack-pill"><i class='bx bxl-css3'></i> CSS3</span>
             <span class="stack-pill"><i class='bx bxl-javascript'></i> JavaScript</span>
           </div>
-
           <div class="featured-features">
             <div class="feat-item">User Authentication</div>
             <div class="feat-item">Expense Categories</div>
@@ -96,7 +375,6 @@
             <div class="feat-item">Data Visualization</div>
             <div class="feat-item">Full CRUD Operations</div>
           </div>
-
           <div class="featured-links">
             <a href="https://expntracker.gt.tc/" target="_blank" class="tl-link-primary">
               <i class='bx bx-link-external'></i> Live Demo
@@ -171,13 +449,8 @@
         <span class="stat-number">5</span>
         <span class="stat-label">Core skills</span>
       </div>
-      <div class="stat-item">
-        <span class="stat-number">∞</span>
-        <span class="stat-label">Problems solved</span>
-      </div>
     </div>
 
-    <!-- CONSTELLATION DIAGRAM -->
     <div class="constellation-wrap" id="constellation">
       <svg class="constellation-svg" id="constSvg" viewBox="0 0 700 700" preserveAspectRatio="xMidYMid meet">
         <circle class="orbit-ring" cx="350" cy="350" r="230"/>
@@ -223,55 +496,52 @@
   </section>
 
   <!-- ===== ABOUT ME ===== -->
-<section class="section" id="about">
-  <div class="section-label">Get to know me</div>
-  <h2 class="section-title"><span>About</span> me</h2>
-  
-  <div class="about-container">
-    <p class="about-text">
-      I'm <strong>Sugam Ghimire</strong>, a passionate full-stack developer based in Nepal. 
-      I love building web applications that solve real-world problems and create meaningful user experiences.
-    </p>
-    <p class="about-text">
-      I specialize in creating end-to-end solutions using <strong>PHP</strong>, <strong>MySQL</strong>, 
-      and modern frontend tools like <strong>React</strong>. From designing databases to deploying live 
-      projects, I handle the full stack and I'm always learning something new along the way.
-    </p>
-    <div class="about-cta">
-      <a href="#contact" class="about-btn">
-<i class="bx bx-user"></i>
-  Explore My Profiles
-      </a>
+  <section class="section" id="about">
+    <div class="section-label">Get to know me</div>
+    <h2 class="section-title"><span>About</span> me</h2>
+
+    <div class="about-container">
+      <p class="about-text">
+        I'm <strong>Sugam Ghimire</strong>, a passionate full-stack developer based in Nepal.
+        I love building web applications that solve real-world problems and create meaningful user experiences.
+      </p>
+      <p class="about-text">
+        I specialize in creating end-to-end solutions using <strong>PHP</strong>, <strong>MySQL</strong>,
+        and modern frontend tools like <strong>React</strong>. From designing databases to deploying live
+        projects, I handle the full stack — and I'm always learning something new along the way.
+      </p>
+      <div class="about-cta">
+        <a href="#contact" class="about-btn">
+          <i class='bx bx-conversation'></i>
+          Let's work together
+        </a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- ===== CONTACT ===== -->
   <section class="section" id="contact">
     <div class="section-label">Contact</div>
-    
+
     <div class="contact-icons">
       <a href="mailto:sugamghimire2080@gmail.com" class="contact-icons-item">
         <i class='bx bx-envelope'></i>
         <span>Email</span>
       </a>
-      
       <a href="https://github.com/SugamGhimire" target="_blank" class="contact-icons-item">
         <i class='bx bxl-github'></i>
         <span>GitHub</span>
       </a>
-      
       <a href="https://www.linkedin.com/in/sugam-ghimire-865473392/" target="_blank" class="contact-icons-item">
         <i class='bx bxl-linkedin'></i>
         <span>LinkedIn</span>
       </a>
-      
       <div class="contact-icons-item contact-icons-location">
         <i class='bx bx-map'></i>
         <span>Nepal</span>
       </div>
     </div>
-    
+
     <p class="contact-icons-note">Available for work · replies within 24h</p>
   </section>
 
@@ -280,5 +550,66 @@
   </footer>
 
   <script src="script.js"></script>
+
+  <script>
+    /* ===== CUSTOM CURSOR SCRIPT ===== */
+    (function () {
+      const dot  = document.getElementById('sgCursor');
+      const ring = document.getElementById('sgRing');
+
+      let mx = window.innerWidth / 2;
+      let my = window.innerHeight / 2;
+      let rx = mx, ry = my;
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+      }, { passive: true });
+
+      function loop() {
+        /* transform only — never left/top — avoids layout recalc every frame */
+        dot.style.transform  = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+        rx += (mx - rx) * 0.13;
+        ry += (my - ry) * 0.13;
+        ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      const interactives = 'a, button, .skill-node, .timeline-card, .social-item a, .about-btn, .tl-link, .tl-link-primary, .back-to-top';
+      document.querySelectorAll(interactives).forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          dot.classList.add('hovered');
+          ring.classList.add('hovered');
+        });
+        el.addEventListener('mouseleave', () => {
+          dot.classList.remove('hovered');
+          ring.classList.remove('hovered');
+        });
+      });
+
+      document.addEventListener('mouseleave', () => {
+        dot.style.opacity  = '0';
+        ring.style.opacity = '0';
+      });
+      document.addEventListener('mouseenter', () => {
+        dot.style.opacity  = '1';
+        ring.style.opacity = '1';
+      });
+    })();
+
+    /* ===== PHOTO ENTRANCE ANIMATION ===== */
+    (function() {
+      const photoArea = document.querySelector('.hero-photo-area');
+      if (!photoArea) return;
+      photoArea.style.opacity = '0';
+      photoArea.style.transform = 'translateY(calc(-50% + 30px)) scale(0.95)';
+      photoArea.style.transition = 'opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)';
+      setTimeout(() => {
+        photoArea.style.opacity = '1';
+        photoArea.style.transform = 'translateY(-50%) scale(1)';
+      }, 400);
+    })();
+  </script>
 </body>
 </html>
