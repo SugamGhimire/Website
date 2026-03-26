@@ -11,10 +11,13 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
   <style>
-    /* ============ CUSTOM CURSOR ============ */
-    * { cursor: none !important; }
+    /* ============ CUSTOM CURSOR (PC / pointer devices only) ============ */
+    @media (pointer: fine) {
+      * { cursor: none !important; }
+    }
 
     .sg-cursor {
+      display: none; /* hidden by default, shown only on pointer devices */
       width: 10px; height: 10px;
       background: #00bcd4;
       border-radius: 50%;
@@ -23,10 +26,10 @@
       z-index: 99999;
       transform: translate(-50%, -50%);
       transition: background 0.2s ease, width 0.2s ease, height 0.2s ease;
-      /* mix-blend-mode removed — forces expensive compositing layer every rAF */
       will-change: transform;
     }
     .sg-cursor-ring {
+      display: none; /* hidden by default, shown only on pointer devices */
       width: 38px; height: 38px;
       border: 1.5px solid rgba(0,188,212,0.6);
       border-radius: 50%;
@@ -36,6 +39,11 @@
       transform: translate(-50%, -50%);
       transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
       will-change: transform;
+    }
+    /* Only show cursor elements on true pointer (mouse) devices */
+    @media (pointer: fine) {
+      .sg-cursor      { display: block; }
+      .sg-cursor-ring { display: block; }
     }
     .sg-cursor.hovered {
       width: 18px; height: 18px;
@@ -325,7 +333,7 @@
           </a>
         </div>
         <div class="social-item">
-          <a href="mailto:sugamghimire2080@gmail.com">
+          <a href="/cdn-cgi/l/email-protection#ea999f8d8b878d82838783988fd8dad2daaa8d878b8386c4898587">
             <i class='bx bx-envelope'></i> Email
           </a>
         </div>
@@ -524,7 +532,7 @@
     <div class="section-label">Contact</div>
 
     <div class="contact-icons">
-      <a href="mailto:sugamghimire2080@gmail.com" class="contact-icons-item">
+      <a href="/cdn-cgi/l/email-protection#ccbfb9abada1aba4a5a1a5bea9fefcf4fc8caba1ada5a0e2afa3a1" class="contact-icons-item">
         <i class='bx bx-envelope'></i>
         <span>Email</span>
       </a>
@@ -549,11 +557,14 @@
     Built with care by <span>Sugam Ghimire</span> · 2025
   </footer>
 
-  <script src="script.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
 
   <script>
-    /* ===== CUSTOM CURSOR SCRIPT ===== */
+    /* ===== CUSTOM CURSOR SCRIPT (PC / pointer devices only) ===== */
     (function () {
+      /* Only run on devices with a fine pointer (mouse). Skip on touch/mobile. */
+      if (!window.matchMedia('(pointer: fine)').matches) return;
+
       const dot  = document.getElementById('sgCursor');
       const ring = document.getElementById('sgRing');
 
@@ -605,11 +616,14 @@
       photoArea.style.opacity = '0';
       photoArea.style.transform = 'translateY(calc(-50% + 30px)) scale(0.95)';
       photoArea.style.transition = 'opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1)';
-      setTimeout(() => {
-        photoArea.style.opacity = '1';
-        photoArea.style.transform = 'translateY(-50%) scale(1)';
-      }, 400);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          photoArea.style.opacity = '';
+          photoArea.style.transform = 'translateY(-50%) scale(1)';
+        });
+      });
     })();
   </script>
+
 </body>
 </html>
